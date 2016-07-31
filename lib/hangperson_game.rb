@@ -10,6 +10,54 @@ class HangpersonGame
   
   def initialize(word)
     @word = word
+    @guesses = ''
+    @wrong_guesses = ''
+  end
+  
+  attr_accessor :word, :guesses, :wrong_guesses
+  
+  def guess(letter)
+    # raise error if argument is invalid
+    raise ArgumentError if (letter.to_s == '') or !(letter =~ /[[:alpha:]]/ )
+    # we don't need case-sensitive check
+    letter.downcase!
+    # check letter and if it doesn't exist, add it in the corresponding variable
+    if @word.include?(letter) 
+      if @guesses.include?(letter)
+        return false
+      else
+        @guesses += letter
+      end
+    else 
+      if @wrong_guesses.include?(letter)
+        return false
+      else
+        @wrong_guesses += letter 
+      end
+    end
+    true
+  end
+  
+  def word_with_guesses
+    wwg=''
+    @word.each_char do |letter|
+      if @guesses.include?(letter)
+        wwg += letter
+      else
+        wwg += '-'
+      end
+    end
+    wwg
+  end
+  
+  def check_win_or_lose
+    if self.word_with_guesses == @word
+      return :win
+    elsif @wrong_guesses.length == 7
+      return :lose
+    else
+      return :play
+    end
   end
 
   def self.get_random_word
